@@ -1,0 +1,33 @@
+# defalue option 
+version=1.1
+git_repo=PaperWriter
+readme_app=vscode
+config_app=txt
+
+defalut=n
+defalue_config=eswa
+alias_path=true
+
+auto_path=true
+# auto set path: 
+# resource_root=./resource
+# latex_root=./latex
+# reference_root=./reference
+# example_root=./example
+
+latex_app=vscode
+
+export_auto_date=false
+export_auto_open=true
+
+# latex_compile=xelatex
+latex_compile=pdflatex
+
+# h, t, ht
+fig_key_head=_
+auto_custom=true
+auto_custom_2_pages=h
+
+# python path
+py_src=/Users/shijitao/Code/python/DeepLearning
+py_tar=/Users/shijitao/Code/python/paper/V2

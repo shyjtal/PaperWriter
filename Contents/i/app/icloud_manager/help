@@ -1,0 +1,12 @@
+allow option:
+    cp: i cp o_path [d_path]
+    rm: i rm [option...] d_path
+    ls: i ls [option...] [d_path]
+    mkdir: i mkdir dir_path
+
+default:
+    o_path is local path and d_path is icloud path, use $tp change another
+    set $alias_transform to transform alias to original file
+
+rm:
+    auto add -r when d_path is dir

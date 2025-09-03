@@ -1,0 +1,18 @@
+#!/bin/bash
+# delete file from iCloud
+
+# 定义源路径和目标路径
+TARGET_PATH="/Users/shijitao/Library/Mobile Documents/com~apple~CloudDocs"
+path=$1
+
+if [[ "$path" != "/*" ]]; then
+  path=/${path}
+fi
+
+if [ -f "$TARGET_PATH"$path ]; then
+    rm "$TARGET_PATH"$path
+elif [ -d "$TARGET_PATH"$path ]; then
+    rm -r "$TARGET_PATH"$path
+else
+    echo "$path donot exist"
+fi

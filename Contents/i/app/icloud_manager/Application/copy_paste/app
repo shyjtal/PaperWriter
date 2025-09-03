@@ -1,0 +1,22 @@
+#!/bin/bash
+# share file to iCloud
+# 定义源路径和目标路径
+
+ROOT_PATH=$(~/sh/tools/resolve_alias "$1")  # 解析替身路径
+TARGET_PATH="/Users/shijitao/Library/Mobile Documents/com~apple~CloudDocs"
+FILE_PATH="$2"
+
+if [[ "$FILE_PATH" != "/*" ]]; then
+  FILE_PATH="/${FILE_PATH}"
+fi
+
+if [[ -d "$ROOT_PATH" ]]; then
+  dir_option=-r
+fi
+
+# 将源路径下的所有内容复制到目标路径
+if [[ ! -z $dir_option && ! -d "$TARGET_PATH"$2 ]]; then
+  mkdir -p "$TARGET_PATH"$2
+fi
+
+cp $dir_option "$ROOT_PATH" "$TARGET_PATH$FILE_PATH"

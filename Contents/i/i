@@ -1,0 +1,22 @@
+#!/bin/bash
+cd "$HOME/sh/app/icloud_manager"
+
+while IFS='=' read -r key value; do
+  # 忽略空行和注释行
+  if [[ -n "$key" && ! "$key" =~ ^# ]]; then
+    eval "export $key=\"$value\""
+  fi
+done < config
+
+if [[ $1 == -version ]]; then
+    echo $version
+elif [[ $1 == -readme ]]; then
+    vim README.md
+elif [[ $1 == -h ]]; then
+    cat help
+elif [[ $1 == -c ]]; then
+    vim config
+else
+    ./app "${@:1}"
+fi
+

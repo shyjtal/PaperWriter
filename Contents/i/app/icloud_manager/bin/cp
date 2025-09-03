@@ -1,0 +1,18 @@
+#!/bin/bash
+cd ~/sh/app/icloud_manager/Application/copy_paste
+
+if [[ $1 == "-p" ]]; then
+  while IFS='=' read -r key value || [[ -n "$key" ]]; do
+    if [[ -n "$key" && ! "$key" =~ ^# ]]; then
+        ./app $key $value
+    fi
+  done < "./configs/$2"
+elif [[ $1 == "-l" ]]; then
+    ls ./configs
+elif [[ $1 == "-a" ]]; then
+  if [[ ! -z $2 ]]; then
+    vim configs/$2
+  fi
+else
+  ./app "$@"
+fi

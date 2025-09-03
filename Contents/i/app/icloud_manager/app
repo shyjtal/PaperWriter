@@ -1,0 +1,23 @@
+#!/bin/bash
+
+while IFS='=' read -r key value; do
+  # 忽略空行和注释行
+  if [[ -n "$key" && ! "$key" =~ ^# ]]; then
+    eval "export $key=\"$value\""
+  fi
+done < config
+
+if [[ $1 == cp ]]; then
+  ./bin/cp "${@:2}"
+elif [[ $1 == rm ]]; then
+  ./bin/rm "${@:2}"
+elif [[ $1 == ls ]]; then
+  ./bin/ls ${@:2}
+elif [[ $1 == mkdir ]]; then
+  ./bin/mkdir ${@:2}
+elif [[ $1 == touch ]]; then
+  ./bin/touch ${@:2}
+else
+  echo "option false"
+  exit 1
+fi

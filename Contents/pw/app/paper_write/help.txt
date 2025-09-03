@@ -1,0 +1,5 @@
+-h -> output help
+-f/a [-s] [-o] -> compile pdf of all/figure [save pdf and resouces before compile] [open last compile pdf]
+-o -f/a -> open last compile pdf
+-c -> config
+if you config [defult], when you donot input -f/a, will aoto use default
