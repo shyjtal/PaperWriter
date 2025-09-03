@@ -3,3 +3,8 @@
 -o -f/a -> open last compile pdf
 -c -> config
 if you config [defult], when you donot input -f/a, will aoto use default
+-rf -> reference
+-rs -> resouces
+-ex -> example
+-lt -> latex
+-py -> $dir_name(base $py_tar)
