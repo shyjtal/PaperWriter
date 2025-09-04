@@ -1,0 +1,38 @@
+#!/bin/sh
+shopt -s nullglob
+
+while IFS='=' read -r key value; do
+    if [[ "$key" == $fig_key_head* ]]; then  
+        files=($resource_root/$resource_type/${value}.*)  
+        if [[ ! ${#files[@]} -eq 1 ]]; then
+            echo "$key must one to one with resource ${!key}.* (${#files[@]})"
+            exit 1
+        fi
+        file="${files[0]}"
+
+        var_name="${key}_fix"
+        fix_var="${!var_name}"
+        [[ $auto_fix == "true" ]] && fix_var=adapt
+        [[ ! -z $fix_var ]] && pages=$(pdftk "$file" dump_data | grep NumberOfPages | awk '{print $2}')
+
+        if [[ $fix_var == "adapt" ]]; then
+            [[ $pages == 3 ]] && fix_var=ht
+            [[ $pages == 2 ]] && fix_var=$auto_fix_2_pages
+        fi
+
+        if [[ "$fix_var" == "ht" ]]; then
+            fix_opt=2-$(($pages-1))
+        elif [[ "$fix_var" == "h" ]]; then
+            fix_opt=2-$pages
+        elif [[ "$fix_var" == "t" ]]; then
+            fix_opt=1-$(($pages-1))
+        fi
+
+        if [[ $pages > 1 ]]; then
+            pdftk "$file" cat $fix_opt output "$HOME/sh/app/paper_write/temp/temp.pdf"
+            mv "$HOME/sh/app/paper_write/temp/temp.pdf" "$file"
+        fi
+        cp "$file" $latex_root/$latex_fig_dir/"${key#"${key%%[!$fig_key_head]*}"}"/
+    fi
+
+done < $HOME/sh/app/paper_write/configs/$config_file

@@ -27,8 +27,8 @@ resolve_alias() {
     fi
 }
 
-if [[ $1 == "-r" && -d $HOME/sh/tools/Library/resolve_alias ]]; then
-    rm -r $HOME/sh/tools/Library/resolve_alias
+if [[ $1 == "-r" ]]; then
+    [[ -d $HOME/sh/tools/Library/resolve_alias ]] && rm -r $HOME/sh/tools/Library/resolve_alias
     exit 0
 fi
 

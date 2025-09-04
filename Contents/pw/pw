@@ -1,26 +1,14 @@
 cd ~/sh/app/paper_write
-if [ -z "$1" ]; then
-    # 读取配置文件并设置变量
-    while IFS='=' read -r key value; do
-    # 忽略空行和注释行
-    if [[ -n "$key" && ! "$key" =~ ^# ]]; then
-        export "$key"="$value"
-    fi
-    done < config
 
-    export config=config
-    ./app -${defalut}
-
-elif [[ $1 == -h ]]; then
-        cat help.txt
-
+if [[ $1 == -h ]]; then
+        cat help
 elif [[ $1 == -p ]]; then
-    cp ./configs/$2 ./$2
-    export config=$2
+    if [[ ! -e ./configs/$2 ]]; then
+        echo $2 "isn't an existing config file"
+        exit 1
+    fi
+    export config_file=$2
     ./app "${@:3}"
-    rm ./$2
 else
-    export config=config
     ./app $@
 fi
-

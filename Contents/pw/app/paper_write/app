@@ -8,8 +8,6 @@ done < config
 if [[ $auto_path == "true" ]]; then
     resource_root=./resource
     latex_root=./latex
-    reference_root=./reference
-    example_root=./example
 fi
 
 [[ -z $config_file ]] && config_file=$defalue_config
@@ -19,8 +17,15 @@ while IFS='=' read -r key value; do
   fi
 done < $HOME/sh/app/paper_write/configs/$config_file
 
-[[ $alias_path == "true" ]] && resource_root=$($HOME/sh/tools/resolve_alias $paper_root/$resource_root -e)
-[[ $alias_path == "true" ]] && latex_root=$($HOME/sh/tools/resolve_alias $paper_root/$latex_root -e)
+[[ $resource_root == .* ]] && resource_root=$paper_root/$resource_root
+[[ $latex_root == .* ]] && latex_root=$paper_root/$latex_root
+
+[[ $alias_path == "true" ]] && resource_root=$($HOME/sh/tools/resolve_alias $resource_root -e)
+[[ $alias_path == "true" ]] && latex_root=$($HOME/sh/tools/resolve_alias $latex_root -e)
+
+export config_file=$config_file
+export resource_root=$resource_root
+export latex_root=$latex_root
 
 library_path=$HOME/Library/ShellApp/paper_write
 [[ ! -d $library_path ]] && mkdir -p $library_path
@@ -30,56 +35,15 @@ if [[ $1 == -c ]]; then
 elif [[ $1 == -n ]]; then
     $HOME/sh/op "$latex_root" $latex_app
     $HOME/sh/op "$latex_root/$latex_tex.tex" $latex_app
-elif [[ $1 == -a || $1 == -u ]]; then
-    [[ $1 == -a ]] && compile=$latex_tex
-    while IFS='=' read -r key value; do
-        if [[ "$key" == $fig_key_head* ]]; then
-            for file in $resource_root/$resource_type/*.$resource_type; do
-                if [[ "$(basename "$file")" == "$value"* ]]; then
-                    var_name="${key}_custom"
-                    custom_var="${!var_name}"
-                    [[ $auto_custom == "true" ]] && custom_var=adapt
+elif [[ $1 == -u ]]; then
+    ./bin/update
+elif [[ $1 == -a* ]]; then
+    compile=$latex_tex
+    [[ $auto_update == "true" ]] && ./bin/update
 
-                    if [[ ! -z $custom_var ]]; then
-                        pages=$(pdftk "$file" dump_data | grep NumberOfPages | awk '{print $2}')
-                    fi
-
-                    if [[ $custom_var == "adapt" ]]; then
-                        if [[ $pages == 3 ]]; then
-                            custom_var=ht
-                        elif [[ $pages == 2 ]]; then
-                            custom_var=$auto_custom_2_pages
-                        fi
-                    fi
-
-                    if [[ "$custom_var" == "ht" ]]; then
-                        custom_opt=2-$(($pages-1))
-                    elif [[ "$custom_var" == "h" ]]; then
-                        custom_opt=2-$pages
-                    elif [[ "$custom_var" == "t" ]]; then
-                        custom_opt=1-$(($pages-1))
-                    fi
-
-                    if [[ $pages > 1 ]]; then
-                        pdftk "$file" cat $custom_opt output "$HOME/sh/app/paper_write/temp/temp.pdf"
-                        mv "$HOME/sh/app/paper_write/temp/temp.pdf" "$file"
-                    fi
-                    key="${key#"${key%%[!$fig_key_head]*}"}"
-                    cp "$file" $latex_root/$latex_fig_dir/$key/
-                fi
-            done
-        fi
-    done < $HOME/sh/app/paper_write/configs/$config_file
+	[[ $1 == -*s* ]] && cp $latex_root/$compile.pdf $library_path/history/${compile}_last.pdf
+    [[ $1 == -*o* ]] && open -a Preview $library_path/history/${compile}_last.pdf
     
-    if [[ $2 == -s ]]; then
-	    cp $latex_root/$compile.pdf $library_path/history/${compile}_last.pdf
-        if [[ $3 == -o ]]; then  
-	  	    open -a Preview $library_path/history/${compile}_last.pdf
-        fi
-    elif [[ $2 == -o ]]; then 
-        open -a Preview $library_path/history/${compile}_last.pdf         
-    fi
-
     cd $latex_root
     if [[ -e "$compile.tex" ]]; then
         $latex_compile $compile.tex
@@ -94,22 +58,27 @@ elif [[ $1 == -e ]]; then
 elif [[ $1 == -e2c ]]; then
     [[ $export_auto_date == "true" ]] && export_name="$(date +"%Y-%m-%d") $export_name"
     $HOME/sh/i cp "$latex_root/$latex_tex.pdf" "$export_cloud_path/$export_name".pdf
-elif [[ $1 == -rf ]]; then
-    [[ $alias_path == "true" ]] && reference_root=$($HOME/sh/tools/resolve_alias $paper_root/$reference_root -e)
-    open "$reference_root"
 elif [[ $1 == -rs ]]; then
     open "$resource_root"
-elif [[ $1 == -ex ]]; then
-    [[ $alias_path == "true" ]] && example_root=$($HOME/sh/tools/resolve_alias $paper_root/$example_root -e)
-    open "$example_root"
 elif [[ $1 == -lt ]]; then
     open "$latex_root"
 elif [[ $1 == -py ]]; then
-    if [[ -d $py_src && -d $py_tar/$2 ]]; then
-        cp $py_src/* $py_tar/$2/
-    fi
+    [[ -d $py_src && -d $py_tar/$2 ]] && cp $py_src/* $py_tar/$2/
 else
+    while IFS='=' read -r key value; do
+      if [[ "$key" == $opt_key_head* ]]; then
+        if [[ $1 == -${key#opt_} ]]; then
+            opt_vaule=${!key}
+            [[ $opt_vaule == .* ]] && opt_vaule=$paper_root/$opt_vaule
+            [[ $alias_path == "true" ]] && opt_vaule=$($HOME/sh/tools/resolve_alias $opt_vaule -e)
+            open "$opt_vaule"
+            exit 0
+        fi
+      fi
+    done < $HOME/sh/app/paper_write/configs/$config_file
+
     echo "option false"
+    exit 1
 fi
 
 $HOME/sh/tools/resolve_alias -r

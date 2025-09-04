@@ -7,15 +7,17 @@ latex_tex=paper
 # latex_compile=xelatex
 latex_compile=pdflatex
 open_latex_app=vscode
+
 all_name=paper
 fig_name=figure
-fig1=Compare
-fig2=Attention
-fig3=Mucin
-fig4=QPI
-fig5=PBT
-fig6=beta
-fig7=k
-fig8=CAM1
-fig9=CAM2
-fig10=TSNE
+
+_fig1=Compare
+_fig2=Attention
+_fig3=Mucin
+_fig4=QPI
+_fig5=PBT
+_fig6=beta
+_fig7=k
+_fig8=CAM1
+_fig9=CAM2
+_fig10=TSNE
