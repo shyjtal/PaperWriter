@@ -26,10 +26,10 @@ elif [[ $1 == -n ]]; then
     op "$latex_root" $latex_app
     op "$latex_root/$latex_tex.tex" $latex_app
 elif [[ $1 == -u ]]; then
-    ./bin/update
+    ./bin/update && rm -r temp
 elif [[ $1 == -a* ]]; then
     [[ -e $latex_root/$latex_tex.tex ]] && compile=$latex_tex || { echo "$latex_tex isn't existing"; exit 1; }
-    [[ $auto_update == "true" ]] && ./bin/update
+    [[ $auto_update == "true" ]] && ./bin/update && rm -r temp
     
     [[ $save_add_date == "true" ]] && save_add="$(date +"%Y-%m-%d")" || save_add=last
 
@@ -61,9 +61,7 @@ else
       if [[ "$key" == $opt_key_head* && $1 == -${key#opt_} ]]; then
         opt_vaule=${!key}
         [[ $opt_vaule == .* ]] && opt_vaule=$paper_root/$opt_vaule
-        
         [[ $alias_path == "true" ]] && opt_vaule=$(resolve_alias $opt_vaule -e)
-        echo $opt_vaule
         open "$opt_vaule" && exit 0
       fi
     done < configs/$config_file
