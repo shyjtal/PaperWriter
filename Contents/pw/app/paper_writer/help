@@ -1,0 +1,14 @@
+-h -> output help
+
+-c -> edit config
+      [$configs_name] edit or add configs_file
+      [-l | (-r $configs_name)] list or remove configs_file
+
+-a -> | [s,o] compile tex [save pdf, open last saving pdf]
+-o -> open last pdf
+-u -> update resources
+
+-rs -> resouces
+-lt -> latex
+
+-py -> $dir_name(base $py_tar)

@@ -29,10 +29,10 @@ while IFS='=' read -r key value; do
         fi
 
         if [[ $pages > 1 ]]; then
-            pdftk "$file" cat $fix_opt output "$HOME/sh/app/paper_write/temp/temp.pdf"
-            mv "$HOME/sh/app/paper_write/temp/temp.pdf" "$file"
+            pdftk "$file" cat $fix_opt output "$HOME/sh/app/paper_writer/temp/temp.pdf"
+            mv "$HOME/sh/app/paper_writer/temp/temp.pdf" "$file"
         fi
         cp "$file" $latex_root/$latex_fig_dir/"${key#"${key%%[!$fig_key_head]*}"}"/
     fi
 
-done < $HOME/sh/app/paper_write/configs/$config_file
+done < $HOME/sh/app/paper_writer/configs/$config_file

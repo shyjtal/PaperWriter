@@ -1,0 +1,33 @@
+paper_root=/Users/shijitao/Documents/paper/version/PaperV1
+latex_root=./version/PaperV1/release/kbs
+
+resource_type=pdf
+resource_type_dir=pdf
+
+latex_fig_dir=figs
+latex_tex=cas-dc-template
+
+export_path=/Users/shijitao/Desktop
+export_cloud_path=/PaperV1
+export_name=Towards_Generality_Multi-scale_Unbiased_Feature_Capture_and_Integration_Network_for_Face_Forgery_Detection
+
+# _DirName=FigName
+_fig1=Compare
+_fig2=Attention
+_fig3=Mucin
+_fig4=QPI
+_fig5=PBT
+_fig6=beta
+_fig7=k
+_fig8=CAM1
+__fig8=CAM2
+_fig9=TSNE
+
+# _fig3_custom=ht
+# _fig4_custom=h
+
+opt_cd=/Users/shijitao/Code/python/paper/V2
+opt_rf=./reference
+opt_ex=./example
+
+py_tar=/Users/shijitao/Code/python/paper/V2

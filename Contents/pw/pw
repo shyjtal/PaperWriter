@@ -1,14 +1,21 @@
-cd ~/sh/app/paper_write
+#!/bin/bash
+export PATH="$HOME/sh/tools:$PATH"
+export PATH="$HOME/sh:$PATH"
+cd ~/sh/app/paper_writer
+source e2s config
 
 if [[ $1 == -h ]]; then
-        cat help
+    cat help
+elif [[ $1 == -readme ]]; then
+    op README.md $readme_app
+elif [[ $1 == -version ]]; then
+    echo $version
 elif [[ $1 == -p ]]; then
-    if [[ ! -e ./configs/$2 ]]; then
-        echo $2 "isn't an existing config file"
-        exit 1
-    fi
+    [[ ! -e ./configs/$2 ]] && echo $2 "isn't an existing config file" && exit 1
     export config_file=$2
     ./app "${@:3}"
 else
     ./app $@
 fi
+
+resolve_alias -r

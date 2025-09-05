@@ -1,5 +1,6 @@
 version=1.2
 git_repo=PaperWriter
+library_path=/Users/shijitao/Library/ShellApp/paper_write
 
 readme_app=vscode
 config_app=txt
@@ -18,18 +19,17 @@ auto_path=true
 
 
 # export setting -e
-export_auto_date=false
+export_add_date=false
 export_auto_open=true
 
-# compile setting -a
+# compile setting -a [xelatex | pdflatex]
 latex_compile=pdflatex
-# latex_compile=xelatex
-
+save_add_date=true
 
 fig_key_head=_
 opt_key_head=opt_
 
-auto_fix=true
+auto_fix=false
 auto_fix_2_pages=h
 # h, t, ht
 

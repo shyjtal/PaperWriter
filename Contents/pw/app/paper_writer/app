@@ -1,0 +1,71 @@
+#!/bin/bash
+source e2s resources/default_path
+[[ -z $config_file ]] && config_file=$defalue_config
+source e2s configs/$config_file
+[[ ! -d $library_path ]] && mkdir -p $library_path
+
+[[ $resource_root == .* ]] && resource_root=$paper_root/$resource_root
+[[ $latex_root == .* ]] && latex_root=$paper_root/$latex_root
+[[ $alias_path == "true" ]] && resource_root=$(resolve_alias $resource_root -e) && latex_root=$(resolve_alias $latex_root -e)
+
+export config_file=$config_file
+export resource_root=$resource_root
+export latex_root=$latex_root
+
+if [[ $1 == -c ]]; then
+    if [[ $2 == -l ]]; then
+        ls configs/
+    elif [[ $2 == -r ]]; then
+        [[ -e configs/$3 ]] && rm configs/$3 || echo "$3 isn't existing"
+    else
+        [[ ! -z $2 ]] && config_edit=configs/$2 || config_edit=config
+        [[ ! -e $config_edit ]] && cp resources/template_configs $config_edit
+        op $config_edit $config_app
+    fi
+elif [[ $1 == -n ]]; then
+    op "$latex_root" $latex_app
+    op "$latex_root/$latex_tex.tex" $latex_app
+elif [[ $1 == -u ]]; then
+    ./bin/update
+elif [[ $1 == -a* ]]; then
+    [[ -e $latex_root/$latex_tex.tex ]] && compile=$latex_tex || { echo "$latex_tex isn't existing"; exit 1; }
+    [[ $auto_update == "true" ]] && ./bin/update
+    
+    [[ $save_add_date == "true" ]] && save_add="$(date +"%Y-%m-%d")" || save_add=last
+
+	if [[ $1 == -*s* ]]; then
+        cp $latex_root/$compile.pdf $library_path/history/"$save_add ${compile}.pdf"
+        echo "$save_add ${compile}.pdf" > $library_path/mapper/$config_file
+    fi
+    [[ $1 == -*o* ]] && open -a Preview $library_path/history/"$(cat $library_path/mapper/$config_file)"
+
+    $latex_compile $compile.tex
+	open -a Preview $compile.pdf  
+elif [[ $1 == -o ]]; then
+    open -a Preview $library_path/history/"$(cat $library_path/mapper/$config_file)"       
+elif [[ $1 == -e ]]; then
+    [[ $export_add_date == "true" ]] && export_name="$(date +"%Y-%m-%d") $export_name"
+    cp "$latex_root/$latex_tex.pdf" "$export_path/$export_name.pdf"
+    [[ $export_auto_open == "true" ]] && open "$export_path/$export_name.pdf"
+elif [[ $1 == -e2c ]]; then
+    [[ $export_add_date == "true" ]] && export_name="$(date +"%Y-%m-%d") $export_name"
+    i cp "$latex_root/$latex_tex.pdf" "$export_cloud_path/$export_name".pdf
+elif [[ $1 == -rs ]]; then
+    open "$resource_root"
+elif [[ $1 == -lt ]]; then
+    open "$latex_root"
+elif [[ $1 == -py ]]; then
+    [[ -d $py_src && -d $py_tar/$2 ]] && cp $py_src/* $py_tar/$2/
+else
+    while IFS='=' read -r key value; do
+      if [[ "$key" == $opt_key_head* && $1 == -${key#opt_} ]]; then
+        opt_vaule=${!key}
+        [[ $opt_vaule == .* ]] && opt_vaule=$paper_root/$opt_vaule
+        
+        [[ $alias_path == "true" ]] && opt_vaule=$(resolve_alias $opt_vaule -e)
+        echo $opt_vaule
+        open "$opt_vaule" && exit 0
+      fi
+    done < configs/$config_file
+    echo "option false" && exit 1
+fi
